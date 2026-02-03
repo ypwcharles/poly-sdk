@@ -31,8 +31,11 @@ const API_LIMITS: Record<ApiType, Bottleneck.ConstructorOptions> = {
     reservoirRefreshInterval: 1000,
   },
   [ApiType.SUBGRAPH]: {
-    minTime: 50, // 50ms minimum interval
-    maxConcurrent: 10,
+    // Goldsky public GraphQL endpoints are rate-limited (default: 50 requests / 10 seconds).
+    // See: https://docs.goldsky.com/subgraphs/graphql-endpoints
+    // We smooth to ~5 req/s and allow a few in-flight requests.
+    minTime: 200,
+    maxConcurrent: 5,
   },
   [ApiType.BINANCE]: {
     // Binance allows 1200 requests/min, we use 10 req/s to be conservative
